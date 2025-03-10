@@ -1,0 +1,94 @@
+------------MYSQL TASK--------------------
+
+----------------CREATE DATABASE STATEMENT----------------------
+CREATE DATABASE db;
+
+----------------DROP DATABASE STATEMENT----------------------
+DROP DATABASE db;
+
+----------------CREATE TABLE STATEMENT----------------------
+CREATE TABLE Users (
+    UserID int NOT NULL AUTO_INCREMENT,
+    LastName varchar(255),
+    FirstName varchar(255),
+    Address varchar(255),
+    City varchar(255) DEFAULT 'India',
+    Age int,
+    CHECK (Age>=18)
+);
+
+CREATE TABLE BankDeatils (
+    HolderID int NOT NULL,
+    Holdername varchar(255),
+    BankBranch varchar(255),
+);
+
+CREATE TABLE Orders (
+    OrderID int NOT NULL,
+    OrderNumber int NOT NULL,
+    OrderDate date DEFAULT CURRENT_DATE(),
+    UserID int NOT NULL,
+    PRIMARY KEY (OrderID),
+    FOREIGN KEY (UserID ) REFERENCES Users(UserID)
+);
+
+CREATE TABLE Student (
+    UserID int NOT NULL,
+    LastName varchar(255),
+    FirstName varchar(255),
+    Address varchar(255),
+    ContactNo varchar(255)
+    UNIQUE (FirstName)
+);
+
+----------------DROP TABLE STATEMENT----------------------
+DROP TABLE Student;
+
+----------------TRUNCATE TABLE STATEMENT----------------------
+TRUNCATE TABLE Student;
+
+----------------ALTER TABLE STATEMENT----------------------
+ALTER TABLE Users
+ADD Email varchar(255);
+
+ALTER TABLE Users
+ADD DateOfBirth date;
+
+----------------ALTER TABLE - DROP COLUMN STATEMENT----------------------
+ALTER TABLE Users
+DROP COLUMN Email;
+
+----------------ALTER TABLE - MODIFY COLUMN STATEMENT---------------------- 
+ALTER TABLE Users
+MODIFY COLUMN DateOfBirth year;
+
+--------------------ALTER TABLE - DROP COLUMN-------------------------------
+ALTER TABLE Persons
+DROP COLUMN DateOfBirth;
+
+---------------------NOT NULL on ALTER TABLE---------------------------------
+ALTER TABLE Persons
+MODIFY Age int NOT NULL;
+
+--------------------UNIQUE Constraint on ALTER TABLE-------------------------
+ALTER TABLE Student
+ADD CONSTRAINT UC_Person UNIQUE (UserID);
+
+---------------------------PRIMARY KEY on ALTER TABLE--------------------------
+ALTER TABLE Users
+ADD CONSTRAINT PK_Person PRIMARY KEY (UserID,LastName);
+
+---------------------------CREATE INDEX STATEMENT-------------------------------
+CREATE INDEX idx
+ON BankDeatils (Holdername);
+
+--------------------------------SELECT STATEMENT------------------------
+SELECT * FROM Users;
+
+---------------------------------SELECT DISTINCT-------------------------
+SELECT DISTINCT City FROM Users;
+
+--------------------------------UPDATE STATEMENT------------------------
+UPDATE Users
+SET City = 'Vadodara'
+WHERE UserID = 1;
