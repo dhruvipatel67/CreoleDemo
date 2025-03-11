@@ -1,0 +1,260 @@
+CREATE TABLE Users (
+    UserID int NOT NULL AUTO_INCREMENT,
+    LastName varchar(255),
+    FirstName varchar(255),
+    Address varchar(255),
+    City varchar(255) DEFAULT 'Ahmedabad',
+    State varchar(255) DEFAULT 'India',
+    Age int,
+    CHECK (Age>=18)
+);
+
+CREATE TABLE Orders (
+    OrderID int NOT NULL,
+    OrderNumber int NOT NULL,
+    OrderDate date DEFAULT CURRENT_DATE(),
+    UserID int NOT NULL,
+    PRIMARY KEY (OrderID),
+    FOREIGN KEY (UserID ) REFERENCES Users(UserID)
+);
+
+CREATE TABLE Customers (
+    OrderID int NOT NULL,
+    CustomerID int NOT NULL,
+    CustomerName varchar(40),
+    ContactName varchar(20),
+    Adddress varchar(100),
+    City varchar(20),
+    PostalCode varchar(10),
+    Country varchar(20)
+);
+
+CREATE TABLE BankDeatils (
+    HolderID int NOT NULL,
+    Holdername varchar(35),
+    BankBranch varchar(50),
+    Address varchar(200),
+    City varchar(25)
+);
+
+CREATE TABLE Products (
+    ProductID int NOT NULL,
+    ProductName varchar(255),
+    SupplierID int NOT NULL,
+    CategoryID int(20),
+    Unit varchar(100),
+    Price DECIMAL(6,3)
+);
+
+CREATE TABLE Employees (
+   Employeeid INT PRIMARY KEY,
+   Name VARCHAR (25) ,
+   Email VARCHAR (40),
+   Department VARCHAR(30)
+);
+
+CREATE TABLE OrderDetails (
+    OrderDetailID INT PRIMARY KEY,
+    OrderID INT PRIMARY KEY,
+    ProductID int NOT NULL,
+    Quantity int NOT NULL
+);
+---------------------------INSERT INTO MASS DATA-------------------------------
+INSERT INTO Employees (Employeeid, Name, Email, Department) VALUES 
+(1, 'Jessie', 'jessie23@gmail.com', 'Development'),
+(2, 'Praveen', 'praveen_dagger@yahoo.com', 'HR'),
+(3, 'Bisa', 'dragonBall@gmail.com', 'Sales'),
+(4, 'Rithvik', 'msvv@hotmail.com', 'IT'),
+(5, 'Suraj', 'srjsunny@gmail.com', 'Quality Assurance'),
+(6, 'Om', 'OmShukla@yahoo.com', 'IT'),
+(7, 'Naruto', 'uzumaki@konoha.com', 'Development');
+---------------------------------AND EXAMPLE--------------------------------------
+SELECT * FROM Users
+WHERE State = 'Gujarat' AND City = 'Morbi';
+
+---------------------------------OR EXAMPLE--------------------------------------
+SELECT * FROM Users
+WHERE City = 'Vadodara' OR City = 'Jamnagar';
+
+---------------------------------NOT EXAMPLE--------------------------------------
+SELECT * FROM Users
+WHERE NOT State = 'Gujarat';
+
+---------------------------------COMBINE AND,OR AND NOT EXAMPLE---------------------------------
+SELECT * FROM Users
+WHERE State = 'Gujarat' AND (City = 'Morbi' OR City = 'Rajkot');
+
+SELECT * FROM Users
+WHERE NOT City = 'Jamnagar' AND NOT City = 'Surat'
+
+---------------------------------ORDER BY EXAMPLE--------------------------------------
+SELECT * FROM Users
+ORDER BY State DESC;
+
+SELECT * FROM Users
+ORDER BY State ASC ,City DESC;
+
+SELECT * FROM Customers
+ORDER BY State,City ASC;
+
+-------------------------------------INSERT INTO EXAMPLE------------------------------------------
+INSERT INTO Customers (HolderName, BankBranch, Address, City)
+VALUES ('Tirth', 'SBI', 'Ravapar Road', 'Morbi');
+
+--------------------------------IS NULL AND IS NOT NULL-----------------------------------
+SELECT * FROM Users
+WHERE Address IS NULL;
+
+SELECT Holdername, BankBranch
+FROM BankDetails
+WHERE Address IS NOT NULL;
+
+---------------------------------DELETE EXAMPLE--------------------------------------
+DELETE FROM Users WHERE City='Delhi';
+
+
+---------------------------------LIMIT ANF OFFSET EXAMPLE--------------------------------------
+SELECT FirstName, LastName, City, State FROM Users LIMIT 10;
+
+SELECT * FROM Users
+LIMIT 10 OFFSET 4;
+
+SELECT * FROM Users
+WHERE City='Morbi'
+LIMIT 10;
+
+SELECT * FROM Users
+ORDER BY State ASC
+LIMIT 10;
+
+SELECT CustomerName, ContactName, City, Country FROM Customers LIMIT 3 OFFSET 3;
+
+-----------------------------MIN() and MAX() Functions--------------------------------
+SELECT MIN(Price) AS SmallestPrice
+FROM Products;
+
+SELECT MAX(Price) AS LargestPrice
+FROM Products;
+
+---------------------------COUNT(), AVG() and SUM() Functions---------------------------
+SELECT COUNT(City) AS NoCity
+FROM Users
+WHERE State='Gujarat';
+
+SELECT AVG(Price)
+FROM Products;
+
+SELECT SUM(Quantity)
+FROM OrderDetails;
+
+-------------------------------------LIKE OPERATOR---------------------------------------
+SELECT * FROM Employees
+WHERE Name LIKE 'a%';
+
+SELECT * FROM Employees
+WHERE Name LIKE '%a';
+
+SELECT * FROM Employees
+WHERE Name LIKE '%or%';
+
+SELECT * FROM Employees
+WHERE Name LIKE '_r%';
+
+SELECT * FROM Employees
+WHERE Name LIKE 'a__%';
+
+SELECT * FROM Employees
+WHERE Name LIKE 'a%o';
+
+SELECT * FROM Employees
+WHERE Name NOT LIKE 'a%';
+
+SELECT * FROM Customers
+WHERE City LIKE 'M___b_';
+
+-------------------------------------IN OPERATOR-------------------------------------------
+SELECT * FROM Users
+WHERE City IN ('Morbi', 'Jamnagar', 'Rajkot');
+
+SELECT * FROM Users
+WHERE City NOT IN ('Morbi', 'Jamnagar', 'Rajkot');
+
+-------------------------------------BETWEEN OPERATOR-------------------------------------------
+SELECT * FROM Products
+WHERE Price BETWEEN 10 AND 20;
+
+SELECT * FROM Products
+WHERE Price NOT BETWEEN 10 AND 20;
+
+SELECT * FROM Products
+WHERE Price BETWEEN 10 AND 20
+AND CategoryID NOT IN (1,2,3);
+
+SELECT * FROM Products
+WHERE ProductName BETWEEN 'BALAJI CHIPS' AND 'DR OTKER PIZZA TOPPING'
+ORDER BY ProductName;
+
+SELECT * FROM Products
+WHERE ProductName NOT BETWEEN 'BALAJI CHIPS' AND 'DR OTKER PIZZA TOPPING'
+ORDER BY ProductName;
+
+---------------------------------ALIASES--------------------------------------
+SELECT CustomerName AS Customer, ContactName AS "Contact Person"
+FROM Customers;
+
+SELECT CustomerID AS ID, CustomerName AS Customer
+FROM Customers;
+
+SELECT o.OrderID, o.OrderDate, c.CustomerName
+FROM Customers AS c, Orders AS o
+WHERE c.CustomerName='Around the Horn' AND c.CustomerID=o.CustomerID;
+
+SELECT Orders.OrderID, Orders.OrderDate, Customers.CustomerName
+FROM Customers, Orders
+WHERE Customers.CustomerName='Around the Horn' AND Customers.CustomerID=Orders.CustomerID;
+
+---------------------------------GROUP BY EXAMPLES--------------------------------------
+SELECT COUNT(CustomerID), Country
+FROM Customers
+GROUP BY Country
+ORDER BY COUNT(CustomerID) DESC;
+
+--------------------------------HAVING EXAMPLES-------------------------------------
+SELECT COUNT(CustomerID), Country ,CustomerName
+FROM Customers
+GROUP BY Country
+HAVING COUNT(CustomerID) < 5;
+
+SELECT COUNT(CustomerID), Country, CustomerName
+FROM Customers
+GROUP BY CustomerName
+HAVING COUNT(CustomerID) < 5;
+
+----------------------------ARITHMETIC OPERATORS-----------------------------------------
+SELECT 17 % 5;
+SELECT 30 / 10;
+SELECT 30 * 20;
+SELECT 30 + 20;
+SELECT 30 - 20;
+
+----------------------------COMPARISON OPERATORS-----------------------------------------
+SELECT * FROM Products
+WHERE Price = 18;
+SELECT * FROM Products
+WHERE Price > 30;
+SELECT * FROM Products
+WHERE Price < 30;
+SELECT * FROM Products
+WHERE Price >= 30;
+SELECT * FROM Products
+WHERE Price <= 30;
+SELECT * FROM Products
+WHERE Price <> 18;
+
+-------------------------------DELETE MASS DATA------------------------------------
+TRUNCATE TABLE Employees; 
+
+DROP TABLE Employees;
+
+
+
