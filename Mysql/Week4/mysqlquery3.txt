@@ -1,0 +1,310 @@
+-------------------------------STRING FUNCTIONS-----------------------------------
+SELECT CHAR_LENGTH("SQL") AS LengthOfString;
+
+SELECT CHARACTER_LENGTH(CustomerName) AS LengthOfName
+FROM Customers;
+
+SELECT CustomerName, CONCAT(Address, " ", PostalCode, " ", City) AS Address
+FROM Customers;
+
+SELECT CONCAT_WS("-", "SQL", "Tutorial", "is", "fun!") AS ConcatenatedString;
+
+FIELD(value, val1, val2, val3, ...)
+SELECT FIELD("q", "s", "q", "l");
+
+SELECT FIND_IN_SET("a", "s,q,l");
+
+SELECT FORMAT(25700.56, 1);
+
+INSERT(string, position, number, string2)
+SELECT INSERT("Hello.com", 7, 5, "Developers");
+
+SELECT CustomerName, INSTR(CustomerName, "a")
+FROM Customers;
+
+SELECT LCASE("Tutorial is FUN!");
+
+SELECT LEFT("SQLQUERY", 3);
+
+SELECT LENGTH(CustomerName) AS LengthOfName
+FROM Customers;
+
+SELECT LOCATE("H", "helloHii");
+
+SELECT LOWER(CustomerName) AS LowercaseCustomerName
+FROM Customers;
+
+SELECT LPAD(CustomerName, 25, "Myself ")
+FROM Customers;
+
+SELECT LTRIM("     SQL QUERY          ");
+
+SELECT MID("Tutorial", 4, 2);
+
+SELECT POSITION("COM" IN "W3Sccomhools.com");
+
+SELECT REPEAT(" Hello Developers ", 5);
+
+SELECT REPLACE("SQL QUERY","SQL","MYSQL");
+
+SELECT RIGHT("SQL Tutorial ",2);
+
+SELECT RPAD("SQL Tutorial", 20, "ABC");
+
+If string1 = string2, this function returns 0
+If string1 < string2, this function returns -1
+If string1 > string2, this function returns 1
+SELECT STRCMP("SQL Tutorial", "HTML Tutorial");
+
+SELECT SUBSTR("MYSQL TUTORIAL",2,3);
+
+SUBSTRING_INDEX(string, delimiter, number)
+SELECT SUBSTRING_INDEX("www.w3schools.com", "w",2);
+
+-------------------------------NUMERIC FUNCTIONS--------------------------
+SELECT ABS(-243.5);
+
+SELECT AVG(Price) FROM Products;
+
+SELECT CEIL(25.752);
+
+SELECT COUNT(ProductID) FROM Products;
+
+SELECT DEGREES(1.5);
+
+SELECT EXP(1);
+The constant e (2.718281...)
+
+SELECT 8 DIV 2;
+
+SELECT FLOOR(25.67);
+
+SELECT GREATEST( 34, 8, 25);
+
+SELECT LEAST(34, 8, 25);
+
+SELECT MOD(18, 4);
+
+SELECT PI();
+
+SELECT POW(4, 2);
+
+SELECT ROUND(135.322, 2);
+
+If number > 0, it returns 1
+If number = 0, it returns 0
+If number < 0, it returns -1
+SELECT SIGN(255.5);
+
+SELECT SUM(Quantity) AS TotalItemsOrdered FROM OrderDetails;
+
+SELECT SQRT(36);
+
+SELECT TRUNCATE(135.375, 2);
+
+SELECT STR_TO_DATE("August 10 2017", "%M %d %Y");
+
+---------------------------------DATE FUNCTIONS------------------------------
+SELECT ADDTIME("2017-06-15 09:34:21", "4");
+
+SELECT CURDATE();
+
+SELECT CURRENT_DATE();
+
+SELECT CURRENT_TIME();
+
+SELECT DATEDIFF("2025-02-25", "2025-03-10");  
+
+SELECT DATE_ADD("2025-03-15", INTERVAL 100 DAY);  
+
+SELECT DATE_ADD("2025-06-15 09:34:21", INTERVAL 3 HOUR); 
+
+SELECT DATE_FORMAT("2025-07-25", "%y");  
+
+SELECT DAY("2017-06-15");  
+
+SELECT DAYNAME("2017-06-15");
+
+SELECT DAYOFMONTH("2017-06-15");
+
+SELECT DAYOFWEEK("2017-06-15");  
+
+SELECT DAYOFYEAR("2017-06-15"); 
+
+SELECT EXTRACT(MONTH FROM "2017-06-15");
+
+SELECT HOUR("2025-07-25 09:34:00");
+
+SELECT MAKEDATE(2025, 225);
+
+SELECT TIME_TO_SEC("19:30:10");
+
+SELECT TIME_FORMAT("19:30:10", "%H %i %s");
+
+SELECT TIMEDIFF("13:10:11", "13:10:10");
+
+SELECT SEC_TO_TIME(11);
+
+SELECT SUBDATE("2017-06-15", INTERVAL 10 DAY);
+
+SELECT WEEKDAY("2017-06-15");
+
+SELECT WEEKOFYEAR("2017-06-15");
+
+SELECT YEAR("2017-06-15");
+
+SELECT YEARWEEK("2017-06-15");
+
+---------------------------------ADVANCED FUNCTION-------------------------------
+SELECT BIN(15);
+
+SELECT BINARY "W3Schools.com";
+
+SELECT OrderID, Quantity,
+CASE WHEN Quantity > 30 THEN 'The quantity is greater than 30'
+WHEN Quantity = 30 THEN 'The quantity is 30'
+ELSE 'The quantity is under 30'
+END AS QuantityText
+FROM OrderDetails;
+
+SELECT CAST("2017-08-29" AS DATE);
+
+SELECT COALESCE(NULL, NULL, NULL, 'W3Schools.com', NULL, 'Example.com');
+
+SELECT CONVERT("2017-08-29", DATE);
+
+SELECT CURRENT_USER();
+
+SELECT DATABASE();  
+
+SELECT IF(500<1000, "YES", "NO");
+
+SELECT IFNULL(NULL, "HELLO");
+
+SELECT ISNULL(NULL);
+
+SELECT ISNULL("");
+
+--------------------------------------CREATE VIEW STATEMENT----------------------------
+CREATE VIEW [Brazil Customers] AS
+SELECT CustomerName, ContactName
+FROM Customers
+WHERE Country = 'Brazil';
+
+CREATE OR REPLACE VIEW [Brazil Customers] AS
+SELECT CustomerName, ContactName, City
+FROM Customers
+WHERE Country = 'Brazil';
+
+DROP VIEW [Brazil Customers];
+----------------------------------------------------------------------------------------
+CREATE DATABASE Company;
+USE Company;
+
+-- Create Department Table
+CREATE TABLE Department
+(
+ ID INT PRIMARY KEY,
+ Name VARCHAR(50)
+);
+
+-- Populate the Department Table with test data
+INSERT INTO Department VALUES(1, 'IT');
+INSERT INTO Department VALUES(2, 'HR');
+INSERT INTO Department VALUES(3, 'Sales');
+
+-- Create Employee Table
+CREATE TABLE Employee
+(
+ ID INT PRIMARY KEY,
+ Name VARCHAR(50),
+ Gender VARCHAR(50),
+ DOB DATETIME,
+ Salary DECIMAL(18,2),
+ DepartmentID INT
+);
+
+-- Populate the Employee Table with test data
+INSERT INTO Employee VALUES(1, 'Pranaya', 'Male','1996-02-29 10:53:27.060', 25000, 1);
+INSERT INTO Employee VALUES(2, 'Priyanka', 'Female','1995-05-25 10:53:27.060', 30000, 2);
+INSERT INTO Employee VALUES(3, 'Anurag', 'Male','1995-04-19 10:53:27.060',40000, 2);
+INSERT INTO Employee VALUES(4, 'Preety', 'Female','1996-03-17 10:53:27.060', 35000, 3);
+INSERT INTO Employee VALUES(5, 'Sambit', 'Male','1997-01-15 10:53:27.060', 27000, 1);
+INSERT INTO Employee VALUES(6, 'Hina', 'Female','1995-07-12 10:53:27.060', 33000, 2);
+
+CREATE VIEW vwEmployeesByDepartment
+AS
+SELECT emp.ID, emp.Name, emp.Salary, emp.Gender, dept.Name AS DepartmentName
+FROM Employee emp
+INNER JOIN Department dept
+ON emp.DepartmentID = dept.ID;
+
+------------------------------GRANT-------------------------------------
+grant insert, 
+select on accounts to Ram
+
+----------------------------------REVOKE--------------------------------------
+revoke insert, 
+select on accounts from Ram
+
+-------------------------------COMMIT--------------------------------------
+SET autocommit=0;
+
+CREATE TABLE Players( 
+   ID INT NOT NULL,
+   First_Name VARCHAR(255),
+   Last_Name VARCHAR(255),
+   Date_Of_Birth date,
+   Place_Of_Birth VARCHAR(255),
+   Country VARCHAR(255),
+   PRIMARY KEY (ID)
+);
+
+Insert into Players values
+(1, 'Shikhar', 'Dhawan', DATE('1981-12-05'), 'Delhi', 'India'),
+(2, 'Jonathan', 'Trott', DATE('1981-04-22'), 'CapeTown', 'SouthAfrica'),
+(3, 'Kumara', 'Sangakkara', DATE('1977-10-27'), 'Matale', 'Srilanka'),
+(4, 'Virat', 'Kohli', DATE('1988-11-05'), 'Delhi', 'India'),
+(5, 'Rohit', 'Sharma', DATE('1987-04-30'), 'Nagpur', 'India'),
+(6, 'Ravindra', 'Jadeja', DATE('1988-12-06'), 'Nagpur', 'India'),
+(7, 'James', 'Anderson', DATE('1982-06-30'), 'Burnley', 'England');
+
+COMMIT;
+
+Delete from Players where id = 7;
+
+SELECT * FROM Players;
+------------------------------------REVOKE------------------------------------
+ROLLBACK;
+
+SELECT * FROM Players;
+
+--------------------------------SAVEPOINT----------------------------------
+SET autocommit=0;
+
+CREATE TABLE EMP(
+   FIRST_NAME CHAR(20) NOT NULL,
+   LAST_NAME CHAR(20),
+   AGE INT,
+   SEX CHAR(1),
+   INCOME FLOAT
+   );
+   
+INSERT INTO EMP VALUES
+('Krishna', 'Sharma', 19, 'M', 2000),
+('Raj', 'Kandukuri', 20, 'M', 7000),
+('Ramya', 'Ramapriya', 25, 'F', 5000);
+
+
+START TRANSACTION;
+SELECT * FROM EMP;
+UPDATE EMP SET AGE = AGE + 1;
+
+SAVEPOINT samplesavepoint;
+
+INSERT INTO EMP ('Mac', 'Mohan', 26, 'M', 2000);
+
+ROLLBACK TO SAVEPOINT samplesavepoint;
+COMMIT;
+
+SELECT * FROM EMP;
