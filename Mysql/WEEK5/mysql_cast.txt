@@ -1,0 +1,33 @@
+--------------------------CAST--------------------------
+CAST() function is used for converting a value from one datatype to another specific datatype. 
+
+SELECT CAST("2023-04-19" AS DATE);
+
+SELECT CAST(121 AS CHAR); 
+
+SELECT CAST(2-4 AS SIGNED); 
+
+SELECT CAST(2-4 AS UNSIGNED);
+
+CREATE TABLE Orderss (
+   OrderID int NOT NULL,
+   CustomerName varchar(255) NOT NULL,
+   OrderDate datetime NOT NULL
+);
+
+INSERT INTO Orderss (OrderID, CustomerName, OrderDate)
+VALUES (1, 'John Doe', CAST('2023-03-15' AS datetime));
+
+INSERT INTO Orderss (OrderID, CustomerName, OrderDate)
+VALUES (2, 'Jane Smith', CAST('2022-04-10' AS datetime));
+
+INSERT INTO Orderss (OrderID, CustomerName, OrderDate)
+VALUES (3, 'Bob Johnson', CAST('2020e -05-20' AS datetime));
+
+INSERT INTO Orderss (OrderID, CustomerName, OrderDate)
+VALUES (4, 'Alice Brown', CAST('2022-06-05' AS datetime));
+
+SELECT OrderID, CustomerName, OrderDate
+FROM Orderss
+WHERE (OrderDate) = 2022
+ORDER BY OrderDate DESC;
