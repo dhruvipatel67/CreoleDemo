@@ -1,0 +1,320 @@
+---------------------------JOINS-----------------------------
+----------------------------INNER JOINS--------------------
+CREATE TABLE employees (
+    employee_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    department_id INT
+);
+
+CREATE TABLE departments (
+    department_id INT AUTO_INCREMENT PRIMARY KEY,
+    department_name VARCHAR(100)
+);
+
+INSERT INTO employees (name, department_id) VALUES
+('Alice', 1),
+('Bob', 2),
+('Charlie', 1),
+('David', 3),
+('Eve', NULL);
+
+INSERT INTO departments (department_id, department_name) VALUES
+(1, 'HR'),
+(2, 'Engineering'),
+(3, 'Marketing'),
+(4, 'Finance');
+
+SELECT employees.name, departments.department_name
+FROM employees
+INNER JOIN departments
+ON employees.department_id = departments.department_id;
+
+----------------------------LEFT JOIN--------------------------------
+SELECT employees.name, departments.department_name
+FROM employees   //table1 take the all data
+LEFT JOIN departments   //table2 take common data among them
+ON employees.department_id = departments.department_id;
+
+SELECT Customers.CustomerName, Orders.OrderID
+FROM Customers
+LEFT JOIN Orders ON Customers.CustomerID = Orders.CustomerID
+ORDER BY Customers.CustomerName;
+
+-----------------------------RIGHT JOIN------------------------------
+SELECT employees.name, departments.department_name
+FROM employees   //table1 take common data among them
+RIGHT JOIN departments    //table2 take the all data
+ON employees.department_id = departments.department_id;
+
+SELECT column_name(s)
+FROM table1
+RIGHT JOIN table2
+ON table1.column_name = table2.column_name;
+
+--------------------------CROSS JOIN-------------------------------
+SELECT employees.name, departments.department_name
+FROM employees
+CROSS JOIN departments;
+
+SELECT Customers.CustomerName, Orders.OrderID
+FROM Customers
+CROSS JOIN Orders;
+
+---------------------SELF JOIN-------------------------------
+ALTER TABLE employees ADD COLUMN manager_id INT;
+
+UPDATE employees SET manager_id = 3 WHERE employee_id = 1;
+UPDATE employees SET manager_id = 3 WHERE employee_id = 2;
+UPDATE employees SET manager_id = 4 WHERE employee_id = 3;
+
+SELECT a.name AS employee, b.name AS manager
+FROM employees a, employees b
+WHERE a.manager_id = b.employee_id;
+
+--------------------------CROSS JOIN---------------------------------
+SELECT employees.name, departments.department_name
+FROM employees
+CROSS JOIN departments;
+
+---------------------------------------INDEX-------------------------------------
+CREATE INDEX index_1
+ON table_index (column4);
+
+CREATE TABLE p_index (
+    column1 INT PRIMARY KEY,
+    column2 INT NOT NULL,
+    column3 INT NOT NULL,
+    column4 VARCHAR(20),
+    INDEX (column2, column3)
+);
+
+CREATE INDEX idx_category ON products (category);
+
+DROP INDEX idx_category ON products;
+----------------------------------UNION----------------------------------
+SELECT City FROM Customers
+UNION
+SELECT City FROM Suppliers;
+
+SELECT City, Country FROM Customers
+WHERE Country='Mexico'
+UNION
+SELECT City, Country FROM Suppliers
+WHERE Country='Japan'
+ORDER BY City DESC;
+
+SELECT 'Customer' AS Type, ContactName, City, Country
+FROM Customers
+UNION
+SELECT 'Supplier', ContactName, City, Country
+FROM Suppliers
+-----------------------------------UNION ALL----------------------------------
+SELECT City FROM Customers
+UNION ALL
+SELECT City FROM Suppliers;
+
+SELECT City, Country FROM Customers
+WHERE Country='Spain'
+UNION ALL
+SELECT City, Country FROM Suppliers
+WHERE Country='Japan'
+ORDER BY City DESC;
+
+---------------------------------FUNCTIONS--------------------------------
+DELIMITER //
+
+CREATE FUNCTION GetTotalRevenue()
+RETURNS DECIMAL(10,2)
+DETERMINISTIC
+BEGIN
+    RETURN (SELECT SUM(TotalAmount) FROM Orders);
+END //
+
+DELIMITER; 
+
+SELECT GetTotalRevenue();    
+
+-----------------------------PROCEDURE-------------------------------
+DELIMITER //
+
+CREATE PROCEDURE GetCustomerOrderDetails(
+    IN customer_id INT,
+    OUT customer_name VARCHAR(50),
+    OUT total_orders INT,
+    OUT total_spent DECIMAL(10,2))
+BEGIN
+    SELECT CONCAT(FirstName,' ', LastName) INTO customer_name
+    FROM Customers
+    WHERE CustomerID = customer_id;
+
+    SELECT COUNT(*) INTO total_orders
+    FROM Orders
+    WHERE CustomerID = customer_id;
+
+    SELECT SUM(TotalAmount) INTO total_spent
+    FROM Orders
+    WHERE CustomerID = customer_id;
+END //
+
+DELIMITER;   
+
+CALL GetCustomerOrderDetails(101, @name, @order_count, @total_spent);
+
+SELECT @name, @order_count, @total_spent;  
+
+------------------------------------------EXISTS--------------------------------------
+SELECT SupplierName
+FROM Suppliers
+WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SupplierID = Suppliers.supplierID AND Price = 22);
+
+------------------------------CONCAT COLUMN----------------------
+SELECT CustomerName, CONCAT(Address, " ", PostalCode, " ", City) AS Address
+FROM Customers;
+
+--------------------------------SUBQUERIES--------------------------
+CREATE TABLE Employee(
+    empid numeric(10),
+    name varchar(20),
+    salary numeric(10),
+    department varchar(20)
+);
+
+CREATE TABLE Departments(
+    deptid numeric(10),
+    department varchar(20)
+);
+
+INSERT INTO Employee 
+VALUES (100,"Jacob A",20000,"SALES"),(101,"James T",50000,"IT"),(102,"Riya S",30000,"IT");
+
+INSERT INTO Departments 
+VALUES (1,"IT"),(2,"ACCOUNTS"),(3,"SUPPORT");
+
+SELECT * 
+FROM Employee 
+WHERE department=(SELECT department FROM Departments WHERE deptid=1);
+
+SELECT * 
+FROM Employee 
+WHERE salary < (SELECT avg(salary) from Employee)
+
+
+SELECT first_name, last_name
+FROM employees
+WHERE department_id IN (
+    SELECT department_id
+    FROM employees
+    WHERE employee_id = 101
+);
+
+----------------------------------------IF THEN-----------------------------------
+DELIMITER $$
+CREATE PROCEDURE Geekdemo( num1 INT)
+BEGIN
+  IF num1 < 5000
+THEN
+ RETURN 'Input is less than 5000.'
+  END IF;
+END; $$
+DELIMITER;
+
+CALL Geekdemo();
+
+----------------------------------IF-THEN-ELSE---------------------------------------
+DELIMITER $$
+CREATE PROCEDURE Geekdemo( num1 INT)
+BEGIN
+ IF num1 < 5000
+THEN
+RETURN 'Input is less than 5000.'
+ELSE
+RETURN 'Input is more than 5000.'
+ END IF;
+END; $$
+DELIMITER;
+
+CALL Geekdemo();
+
+-------------------------------IF-THEN-ELSE IF-ELSE------------------------------
+DELIMITER $$
+CREATE PROCEDURE Geekdemo( num1 INT)
+BEGIN
+IF num1 < 5000
+THEN
+RETURN 'Input is less than 5000.'
+ELSEIF
+num1 = 5000 THEN
+RETURN 'Input is equal to 5000.'
+ELSE
+RETURN 'Input is more than 5000.'
+END IF;
+END; $$
+DELIMITER;
+
+CALL Geekdemo();
+
+-------------------------------------SWITCH(CASE)----------------------------
+SELECT CustomerName, City, Country
+FROM Customers
+ORDER BY
+(CASE
+    WHEN City IS NULL THEN Country
+    ELSE City
+END);
+
+
+CREATE TABLE float01001
+(  
+user_id int NOT NULL AUTO_INCREMENT,
+float_val float,
+PRIMARY KEY(user_id)
+);
+
+INSERT float01001(float_val)  
+VALUES (1.9);
+
+INSERT float01001(float_val)  
+VALUES (1.1);
+
+INSERT float01001(float_val)  
+VALUES (3.9);
+
+INSERT float01001(float_val)  
+VALUES (5.0);
+
+INSERT float01001(float_val)  
+VALUES (10.9);
+
+SELECT float_val,
+CASE
+    WHEN float_val > 5 THEN "The value is greater than 5"
+    WHEN float_val = 5 THEN "The value is 5"
+    ELSE "The value is under 5"
+END as float_txt
+FROM float01001;
+
+| float_val | float_txt                   |
++-----------+-----------------------------+
+|       1.9 | The value is under 5        |
+|       1.1 | The value is under 5        |
+|       3.9 | The value is under 5        |
+|         5 | The value is 5              |
+|      10.9 | The value is greater than 5 |
+
+SELECT float_val,
+CASE
+    WHEN LENGTH(float_val) > 4 THEN "The length is greater than 4"
+    WHEN LENGTH(float_val) = 4 THEN "The length is 4"
+    ELSE "The length is less than 4"
+END as float_txt
+FROM float01001;
+
+|float_val  | float_txt                 |
++-----------+---------------------------+
+|       1.9 | The length is less than 4 |
+|       1.1 | The length is less than 4 |
+|       3.9 | The length is less than 4 |
+|         5 | The length is less than 4 |
+|      10.9 | The length is 4           |
+
+
