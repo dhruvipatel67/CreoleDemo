@@ -1,0 +1,32 @@
+1. Match beginning of string(^)
+SELECT name FROM student_tbl WHERE name REGEXP '^sa';
+
+2. Match the end of a string($)
+SELECT name FROM student_tbl WHERE name REGEXP 'on$';
+
+3. Match zero or one instance of the strings preceding it(?)
+SELECT title FROM movies_tbl WHERE title REGEXP 'com ?'; 
+
+4. Matches any of the patterns p1, p2, or p3(p1|p2|p3)
+SELECT name FROM student_tbl WHERE name REGEXP 'be|ae' ;
+
+5. Matches any character listed between the square brackets([abc])
+SELECT name FROM student_tbl WHERE name REGEXP '[jz]' ;
+
+6. Matches any lower case letter between ‘a’ to ‘z’- ([a-z]) ([a-z] and (.))
+SELECT name FROM student_tbl WHERE name REGEXP '[b-g].[a]' ;
+
+7. Matches any character not listed between the square brackets.([^abc])
+SELECT name FROM student_tbl WHERE name REGEXP '^[^jz]*$';
+
+8. Matches the end of words[[:>:]]
+SELECT title FROM movies_tbl WHERE REGEXP 'ack[[:>:]]'; 
+
+9. Matches the beginning of words[[:<:]]
+SELECT title FROM movies_tbl WHERE title REGEXP '[[:<:]]for'; 
+
+10. Matches a character class[:class:]
+SELECT title FROM movies_tbl WHERE REGEXP '[:alpha:]' ;
+
+11. Matches the beginning of all words by any character listed between the square brackets.(^[abc])
+SELECT name FROM student_tbl WHERE name REGEXP '^[ns]' ;
