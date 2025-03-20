@@ -8,9 +8,9 @@ require __DIR__ . '/vendor/autoload.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $errors = [];
-    $name = trim($_POST['name']);
+    $name = filter_var(trim($_POST['name']), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $email = trim($_POST['email']);
-    $message = trim($_POST['message']);
+    $message = filter_var(trim($_POST['message']), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     // Validate Name
     if (empty($name)) {
@@ -66,7 +66,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } catch (Exception $e) {
         $_SESSION['error'] = "Email could not be sent. Error: " . $mail->ErrorInfo;
     }
-
     header("Location: index.php");
     exit();
 }
