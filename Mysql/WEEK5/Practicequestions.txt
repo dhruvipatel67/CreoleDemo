@@ -1,0 +1,159 @@
+------------------------------1. Data Types and Constraints (PK, UK, FK, CK)------------------------
+
+Question:
+• Create a students table where:
+• student_id is a Primary Key
+• email is Unique
+• class_id is a Foreign Key referencing departments.department_id
+• age must be greater than 5 (Check Constraint)
+
+CREATE TABLE Students( student_id INT PRIMARY KEY, student_name VARCHAR(100), email_id VARCHAR(100) UNIQUE, age INT CHECK (age > 5), class_id INT, FOREIGN KEY (class_id) REFERENCES Departments(department_id) );
+
+-------------------------------2. SELECT, INSERT, UPDATE, DELETE---------------------------
+
+Questions:
+• Select all employees from the employees table who work in the Sales department.
+
+SELECT e.* FROM Employees e JOIN Departments d ON e.department_id = d.department_id WHERE d.department_name = 'Sales';
+
+• Insert a new department into the departments table.
+
+INSERT INTO Departments ('department_id', 'department_name') VALUES ('104','Marketing');
+
+• Update Judy’s salary to 7000 in the employees table.
+
+UPDATE Employees SET salary ='7000' WHERE employee_name = 'Judy'; 
+
+• Delete the employee Ivan from the employees table.
+
+DELETE FROM Employees WHERE employee_name = 'Ivan';
+
+-------------------------3. Mass Data Insert with a Single Query------------------------------
+
+Question:
+• Insert three new employees into the employees table with a single INSERT query.
+
+INSERT INTO `Employees`(`employee_id`, `employee_name`, `salary`, `department_id`, `manager_id`, `hire_date`) VALUES ('11','Timi','7200','102','4','2025-02-15'), ('12','Loora','8600','103','4','2025-01-25'), ('13','Maxi','7250','101','2','2025-02-19');
+
+--------------------------------------4. Mass Delete-------------------------------
+
+Question:
+• Delete all employees from the employees table who joined before 2019-01-01.
+
+DELETE FROM Employees WHERE hire_date < '2019-01-01';
+
+----------------------------5. BETWEEN, Pagination, HAVING, Aggregate Functions-------------------------
+
+Questions:
+• Get all sales from the sales table that happened between 2024-01-01 and 2024-02-01.
+
+SELECT * FROM Sales WHERE sale_date BETWEEN '2024-01-01' AND '2024-02-01';
+
+• Retrieve the first 3 employees ordered by salary (pagination: LIMIT).
+
+SELECT * FROM Employees ORDER BY salary LIMIT 3;
+
+• Find departments that have more than 2 employees (GROUP BY department_id with HAVING).
+
+SELECT department_id, COUNT(*) AS employee_count FROM Employees GROUP BY department_id HAVING COUNT(*) > 2;
+
+• Calculate the total sales amount for each region.
+
+SELECT region, SUM(amount) AS Total_Amount FROM Sales GROUP BY region;
+
+------------------------------------1. Joins-----------------------------------
+
+Questions:
+
+• List all employees along with their department names (join employees and departments).
+
+SELECT e.employee_name, d.department_name FROM Employees e JOIN Departments d ON e.department_id = d.department_id;
+
+• List employees with their manager’s name (left join on employees table).
+
+SELECT e.employee_name AS EMPLOYEES, m.employee_name AS MANAGER FROM Employees e LEFT JOIN Employees m ON e.manager_id = m.employee_id;
+
+------------------------------------2. Subqueries--------------------------------
+
+Questions:
+
+• Find employees who earn more than the average salary of their department.
+
+SELECT * FROM Employees e WHERE salary > (
+    SELECT AVG(salary)
+    FROM Employees
+    WHERE department_id = e.department_id
+    );
+    
+• Retrieve products from the products table that were never sold.
+
+SELECT * FROM Products P WHERE NOT EXISTS ( SELECT 1 FROM Sales S WHERE S.product_id = P.product_id );
+
+--------------------------3. Date Manipulation Operations------------------------
+
+Questions:
+
+• Find employees who joined the company in the last 2 years.
+
+SELECT * FROM Employees WHERE hire_date >= DATE_SUB(CURDATE(), INTERVAL 2 YEAR);
+
+• Calculate how many days each employee has worked till today (based on hire_date).
+
+SELECT employee_name, DATEDIFF(CURDATE(), hire_date) AS DAY_WORKED FROM Employees;
+
+• From the sales table, find the month and total sales for each month.
+
+SELECT DATE_FORMAT(sale_date, '%Y-%m') AS SALE_MONTH, SUM(amount) AS TOTAL_SALES FROM Sales GROUP BY SALE_MONTH;
+
+-------------------------4. UNION / UNION ALL----------------------------
+
+Questions:
+
+• Get a list of all employees and managers, combining employee_name and manager_name (use UNION).
+
+SELECT employee_name AS NAME FROM Employees UNION SELECT employee_name AS NAME FROM Employees WHERE employee_id IN (SELECT DISTINCT manager_id FROM Employees WHERE manager_id IS NOT NULL);
+
+• Combine customers from sales who are from North and South regions (no duplicates, use UNION).
+
+SELECT customer_id FROM Sales WHERE region = 'North' UNION SELECT customer_id FROM Sales WHERE region = 'South';
+
+------------------------5. Column Concat, Indexing, IF ELSE, Switch Case, LIMIT/OFFSET------------
+
+Questions:
+
+• Show employee full names by concatenating employee_name with ' (ID: ' + employee_id + ')'.
+
+SELECT CONCAT(employee_name, ' (ID: ' + employee_id + ')') AS FULL_NAME FROM Employees;
+
+• Create an index on employee_name in the employees table.
+
+CREATE INDEX idx_employee_name ON Employees(employee_name);
+
+• Use CASE:
+• Salary > 8000 → ‘High’
+• 6000 to 8000 → ‘Medium’
+• < 6000 → ‘Low’
+• Use IF() to check if an employee has a manager or not.
+• If manager_id IS NULL → ‘Top Manager’
+• Else → ‘Employee’
+
+SELECT`employee_name`, `salary`
+CASE 
+WHEN salary > 80000  THEN 'High'
+WHEN salary BETWEEN 6000 AND 8000 THEN 'Medium'
+ELSE 'Low'
+END AS salary_status
+FROM Employees;
+
+• Find Third Highest salary from Employees table using LIMIT/OFFSET.
+
+SELECT DISTINCT (salary) FROM Employees ORDER BY salary DESC LIMIT 1 OFFSET 2; 
+
+
+• List the top 2 highest-paid employees in each department (use DENSE_RANK() or subqueries).
+
+SELECT salary FORM ( SELECT salary, DENSE_RANK() OVER (ORDER BY salary DESC) AS rank FROM Employees ) AS rank_salary WHERE rank = 2;
+
+• Calculate the cumulative total sales by region sorted by sale_date.
+
+SELECT region, sale_date, amount, SUM(amount) OVER (PARTITION BY region ORDER BY sale_date) AS cumulative_sales FROM Sales ORDER BY region, sale_date;
