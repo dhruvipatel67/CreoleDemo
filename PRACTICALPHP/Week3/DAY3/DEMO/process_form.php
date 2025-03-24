@@ -9,7 +9,7 @@ require __DIR__ . '/vendor/autoload.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $errors = [];
     $name = filter_var(trim($_POST['name']), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $email = trim($_POST['email']);
+    $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
     $message = filter_var(trim($_POST['message']), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     // Validate Name
