@@ -1,15 +1,21 @@
 <?php
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 session_start();
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 require __DIR__ . '/vendor/autoload.php';
+require 'fetch.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
     $errors = [];
     $name = filter_var(trim($_POST['name']), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+    $email = filter_var(trim($_POST['email']), FILTER_VALIDATE_EMAIL);
     $message = filter_var(trim($_POST['message']), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     // Validate Name
@@ -41,31 +47,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    // Send email using PHPMailer with SMTP
+
+    $name_proper = mysqli_real_escape_string($conn, $name);
+    $email_proper = mysqli_real_escape_string($conn, $email);
+    $message_proper = mysqli_real_escape_string($conn, $message);
+
+    $sql = "INSERT INTO Users (name, email, message) VALUES ('$name_safe', '$email_safe', '$message_safe')";
+
+    if (mysqli_query($conn, $sql)) {
+        $_SESSION['success'] = "Your message has been sent successfully and saved to the database!";
+    } else {
+        $_SESSION['error'] = "Error: " . mysqli_error($conn);
+        header("Location: index.php");
+        exit();
+    }
+
+
     $mail = new PHPMailer(true);
 
     try {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'dummyy257@gmail.com';  // Replace with your email
-        $mail->Password = 'ezohpsrlhaggmonh';  // Replace with your email password
-        $mail->SMTPSecure = 'PHPMailer::ENCRYPTION_STARTTLS; ';  // Use TLS encryption
+        $mail->Username = 'dummyy257@gmail.com'; // Replace with your Gmail
+        $mail->Password = 'ezohpsrlhaggmonh'; // Replace with your Gmail App password
+        $mail->SMTPSecure = 'tls'; // Corrected the encryption type
         $mail->Port = 587;
 
         // Email settings
-        $mail->setFrom('dummyy257@gmail.com', 'Your Form'); // Replace with your email
-        $mail->addAddress($email, $name);  // Send confirmation email to user
+        $mail->setFrom('dummyy257@gmail.com', 'Your Form');
+        $mail->addAddress($email, $name);
 
         $mail->Subject = "Thank You for Contacting Us!";
-        $mail->Body    = "Hello $name,\n\nThank you for reaching out. We have received your message:\n\n$message\n\nBest Regards,\nYour Website Team";
+        $mail->Body = "Hello $name,\n\nThank you for reaching out. We have received your message:\n\n$message\n\nBest Regards,\nYour Website Team";
 
         $mail->send();
 
-        $_SESSION['success'] = "Your message has been sent successfully! Check your email.";
+        $_SESSION['success'] .= " Check your email for confirmation!";
     } catch (Exception $e) {
-        $_SESSION['error'] = "Email could not be sent. Error: " . $mail->ErrorInfo;
+        $_SESSION['error'] = "Email could not be sent. Mailer Error: " . $mail->ErrorInfo;
     }
+
+    mysqli_close($conn);
+
     header("Location: index.php");
     exit();
 }
