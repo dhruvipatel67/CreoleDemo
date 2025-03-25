@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email_proper = mysqli_real_escape_string($conn, $email);
     $message_proper = mysqli_real_escape_string($conn, $message);
 
-    $sql = "INSERT INTO Users (name, email, message) VALUES ('$name_safe', '$email_safe', '$message_safe')";
+     $sql = "INSERT INTO Users (name, email, message) VALUES ('$name_proper', '$email_proper', '$message_proper')";
 
     if (mysqli_query($conn, $sql)) {
         $_SESSION['success'] = "Your message has been sent successfully and saved to the database!";
