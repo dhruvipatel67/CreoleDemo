@@ -1,0 +1,14 @@
+/*
+Theme Name: Sailor
+Theme URI: https://bootstrapmade.com/sailor-free-bootstrap-theme/
+Author: Your Name
+Author URI: https://yourwebsite.com
+Description: WordPress theme based on Sailor Bootstrap template
+Version: 1.0
+License: MIT
+License URI: https://bootstrapmade.com/license/
+Text Domain: sailor-theme
+*/
+
+/* Import your main styles */
+@import url('assets/css/main.css');
